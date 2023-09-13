@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block main %}
+<main id="main" class="main">
+
+  <div class="pagetitle mt-2 mb-5">
+    <h1>자유 게시판</h1>
+  </div><!-- End Page Title -->
+
+  <section class="section profile">
+    <div class="card">
+      <div class="card-body">
+
+        <div class="profile-overview" id="profile-overview" style="padding:20px;">
+          <a href="{% url 'website:free_board' %}" style="float: right;">취소</a>
+          <h5 class="card-title">글 등록하기</h5>
+
+          <form id="createForm" onsubmit="return false;" class="mt-3">
+            <div class="row mb-3">
+              <label for="user-name" class="col-sm-2 col-form-label">작성자</label>
+              <div class="col-sm-7">
+                <input id="user-name" name="user_name" type="text" class="form-control" value="{{user.username}}"
+                  disabled>
+              </div>
+              <div class="col-sm-2 row" style="margin-left:10px;">
+                <input id="anony-flag" name="anony_flag" type="checkbox" class="form-check col-sm-1" style="zoom:1.2;">
+                <label for="anony-flag" class="col-sm-4 col-form-label">비공개</label>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label for="type" class="col-sm-2 col-form-label">분류</label>
+              <div class="col-sm-9">
+                <select class="form-select" name="board_type" id="board-type">
+                  <option value="" selected disabled>분류를 선택해 주세요</option>
+                  {% for type in board_type %}
+                  <option value="{{type.id}}">{{type.type_name}}</option>
+                  {% endfor %}
+                </select>
+                <div id="board-type-feedback" style="font-size:small"></div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label for="title" class="col-sm-2 col-form-label">제목</label>
+              <div class="col-sm-9">
+                <input id="title" name="title" type="text" class="form-control" placeholder="제목을 입력해주세요">
+                <div id="title-feedback" style="font-size:small"></div>
+              </div>
+            </div>
+            <div class="row mb-5">
+              <label for="content" class="col-sm-2 col-form-label">내용</label>
+              <div class="col-sm-9">
+                <textarea class="form-control" id="content" name="content" style="min-height: 300px" placeholder="내용을 입력해 주세요"></textarea>
+              </div>
+            </div>
+            <div class="mb-3">
+              <button class="btn btn-primary" id="btn-save" style="float: right;" onclick="saveBoard();">작성 완료</button>
+            </div>
+          </form><!-- End General Form Elements -->
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main><!-- End #main -->
+{% endblock main %}
+{% block javascripts %}
+<script src="{% static 'js/website/free_board/free_board_create.js' %}"></script>
+{% endblock javascripts %}

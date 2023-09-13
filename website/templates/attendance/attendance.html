@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block main %}
+<main id="main" class="main">
+
+  <div class="pagetitle mb-5">
+    <h1>출결</h1>
+  </div><!-- End Page Title -->
+
+  <section class="section" >
+      <div class="card">
+        <div class="card-header mb-2">
+          <b>출결</b>
+        </div>
+        <div class="card-body">
+          <div style="margin:30px;">
+            <h5 id="month"></h5>
+          </div>
+          <div style="display:flex;justify-content:center;margin:30px;">
+            <table class="table table-bordered text-center" style="width:80%;">
+              <thead>
+                <tr>
+                  <th class="col-md-1">#</th>
+                  <th class="col-md-3">날짜</th>
+                  <th class="col-md-3"></th>
+                  <th class="col-md-3"></th>
+                </tr>
+              </thead>
+              <tbody>
+                {% if not today_flag %}
+                <tr>
+                  <td></td>
+                  <td id="today"></td>
+                  <td class="text-center" id="attendance-time"><button class="btn btn-success btn-sm" onclick="checkAttendance();">출근</button></td>
+                  <td id="leave-time"> -- </td>
+                </tr>
+                {% endif %}
+                {% for i in attendance %}
+                <tr>
+                  <td>{{forloop.counter}}</td>
+                  <td>{{i.created_at|date:"Y년 m월 d일"}}</td>
+                  <td><span>{{i.attend_time}}</span><span class="badge border-success border-1 text-success">출근</span></td>
+                  {% if i.leave_time %}
+                  <td>
+                    <span>{{i.leave_time}}</span><span class="badge border-danger border-1 text-danger">퇴근</span>
+                  </td>
+                  {% else %}
+                  <td class="text-center" id="leave-time">
+                    <button class="btn btn-danger btn-sm" onclick="checkLeave({{i.id}});">퇴근</button>
+                  </td>
+                  {% endif %}
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+  </section>
+</main>
+{% endblock main %}
+{% block javascripts %}
+<script src="{% static 'js/website/attendance/attendance.js' %}"></script>
+{% endblock javascripts %}

@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block body %}
+<main>
+    <div class="container">
+
+      <section class="section register min-vh-100 d-flex flex-column align-items-center justify-content-center py-4">
+        <div class="container">
+          <div class="row justify-content-center">
+            <div class="col-lg-4 col-md-6 d-flex flex-column align-items-center justify-content-center">
+
+              <div class="d-flex justify-content-center py-4">
+                <a href="{% url 'website:register' %}" class="logo d-flex align-items-center w-auto">
+                  <span class="d-none d-lg-block">Company</span>
+                </a>
+              </div><!-- End Logo -->
+
+              <div class="card mb-3">
+
+                <div class="card-body">
+
+                  <div class="pt-4 pb-2">
+                    <h5 class="card-title text-center pb-0 fs-4">계정 생성</h5>
+                    <p class="text-center small">* 계정 생성 내역 확인 후 로그인이 가능합니다.</p>
+                  </div>
+
+                  <form class="row g-3" id="registerForm" onsubmit="return false;">
+                    <div class="col-12">
+                      <label for="membername" class="form-label">이름</label>
+                      <input type="text" name="membername" class="form-control" id="membername">
+                      <div id="membername-feedback" style="font-size:small"></div>
+                    </div>
+
+                    <div class="col-12">
+                      <label for="username" class="form-label">아이디</label>
+                      <div class="input-group has-validation">
+                        <input type="text" name="username" class="form-control" id="username">
+                        <button class="btn btn-secondary btn-sm" class="form-control" id="check-dupl-username">중복 검사</button>
+                      </div>
+                      <div id="username-feedback" style="font-size:small">영문자로 시작하는 6~20자 영문자 또는 숫자이어야 합니다.</div>
+                    </div>
+                    
+                    <div class="col-12">
+                      <label for="password" class="form-label">비밀번호</label>
+                      <input type="password" name="password" class="form-control" id="password">
+                      <div id="password-feedback" style="font-size:small">숫자와 영문자 조합으로 8~16자리를 사용해야 합니다.</div>
+                    </div>
+                    
+                    <div class="col-12">
+                      <label for="check-password" class="form-label">비밀번호 확인</label>
+                      <input type="password" name="check_password" class="form-control" id="check-password">
+                      <div id="check-password-feedback" style="font-size:small"></div>
+                    </div>
+                    
+                    <div class="col-12">
+                      <label for="email" class="form-label">개인 이메일</label>
+                      <div class="input-group has-validation">
+                        <input type="email" name="email" class="form-control" id="email">
+                        <button class="btn btn-secondary btn-sm" class="form-control" id="check-dupl-email">중복 검사</button>
+                      </div>
+                      <div id="email-feedback" style="font-size:small"></div>
+                    </div>
+                    
+                    <div class="col-12">
+                      <label for="phone-no" class="form-label">전화번호</label>
+                      <input type="text" name="phone_no" class="form-control" placeholder="000-0000-0000" id="phone-no">
+                      <div id="phone-no-feedback" style="font-size:small"></div>
+                    </div>
+
+                    <div class="col-12">
+                      <label for="department" class="form-label">소속</label>
+                      <select class="form-select" name="department_id" id="department">
+                        {% for part in department %}
+                            <option value="{{part.id}}">{{part.name}}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+
+                    <div class="col-12">
+                    </div>
+                    <div class="col-12">
+                      <button class="btn btn-primary w-100" id="btn-submit">신청</button>
+                    </div>
+                    <div class="col-12">
+                      <p class="small mb-0">이미 계정이 존재하신가요? <a href="{% url 'website:login' %}">로그인</a></p>
+                    </div>
+                  </form>
+
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+    </div>
+  </main><!-- End #main -->
+
+{% endblock body %}
+{% block javascripts %}
+<script src="{% static 'js/website/auth/register.js' %}"></script>
+{% endblock javascripts %}

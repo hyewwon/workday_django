@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block main %}
+<main id="main" class="main">
+
+  <div class="pagetitle mt-2 mb-5">
+    <h1>공지사항</h1>
+  </div><!-- End Page Title -->
+
+  <section class="section profile">
+    <div class="card">
+      <div class="card-header mb-2">
+        <b>목록</b>
+      </div>
+      <div class="card-body">
+        <table class="table table-hover">
+          <thead>
+            <tr class="table-primary">
+              <th scope="col">#</th>
+              <th scope="col">제목</th>
+              <th scope="col">작성자</th>
+              <th scope="col">일자</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">1</th>
+              <td>Brandon Jacob</td>
+              <td>Designer</td>
+              <td>2016-05-25</td>
+            </tr>
+          </tbody>
+        </table>
+
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-body mt-3">
+        <div class="row">
+          <div class="col-2">
+            <select name="" id="" class="form-select">
+              <option value="">제목</option>
+              <option value="">내용</option>
+              <option value="">제목/내용</option>
+            </select>
+          </div>
+          <div class="col-8">
+            <input type="text" placeholder="검색어를 입력해주세요." class="form-control">
+          </div>
+          <button class="btn btn-primary col-1">검색</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main><!-- End #main -->
+
+
+{% endblock main %}
+{% block javascripts %}
+<script src="{% static 'js/website/mypage/mypage_edit.js' %}"></script>
+{% endblock javascripts %}

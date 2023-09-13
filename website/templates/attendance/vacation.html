@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block main %}
+<main id="main" class="main">
+  <div class="pagetitle mt-2 mb-5">
+    <h1>휴가 신청</h1>
+  </div><!-- End Page Title -->
+  <section class="section">
+    <div class="row">
+      <div class="col-xl-4">
+        <div class="card">
+          <div class="card-header">
+            <b>신청하기</b>
+          </div>
+          <div class="card-body pt-4 flex-column align-items-center">
+            <form id="vacationForm" onsubmit="return false;">
+              <div class="row mb-3">
+                <label for="department" class="col-sm-2 col-form-label">소속</label>
+                <div class="col-sm-9">
+                  <select class="form-select" name="department_id" id="department" disabled>
+                    {% for part in department %}
+                      {% if part.id == user_department %}
+                      <option value="{{part.id}}" selected>{{part.name}}</option>
+                      {% endif %}
+                      <option value="{{part.id}}">{{part.name}}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+              </div>
+              <div class="row mb-3">
+                <label for="regist-type" class="col-sm-2 col-form-label">분류</label>
+                <div class="col-sm-9">
+                  <select class="form-select" name="regist_type" id="regist-type" onchange="changeForm();">
+                    <option value="1" selected>신청</option>
+                      <option value="2">변경</option>
+                  </select>
+                </div>
+              </div>
+              <div class="row mb-3" id="user_vacation_table" style="display:flex;justify-content:center;" hidden>
+                <div class="col-sm-8">
+                  <p style="font-size:small;">수정할 날짜를 선택 해주세요</p>
+                  <table class="table table-sm table-hover text-center">
+                    <thead>
+                      <tr class="table-primary">
+                        <th>시작일</th>
+                        <th>종료일</th>
+                        <th></th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% if user_vacation %}
+                      {% for i in user_vacation %}
+                      <tr>
+                        <td>{{i.start_date|date:"Y-m-d"}}</td>
+                        <td>{{i.end_date|date:"Y-m-d"}}</td>
+                        <td><a href="javascripts::" onclick="getDateForm('{{i.id}}', '{{i.start_date|date:"Y-m-d"}}', '{{i.end_date|date:"Y-m-d"}}')"><span class="badge border-primary border-1 text-primary">선택</span></a></td>
+                        <td><a href="javascripts::" onclick="deleteDate('{{i.id}}')"><span class="badge border-danger border-1 text-danger">삭제</span></a></td>
+                      </tr>
+                      {% endfor %}
+                      {% else %}
+                      <tr>
+                        <td colspan="3">신청한 휴가가 없습니다.</td>
+                      </tr>
+                      {% endif %}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              
+              <div id="date-form">
+                <div class="row mb-3">
+                  <input type="hidden" value="", id="vacation-id" name="vacation_id">
+                  <label for="start-date" class="col-sm-2 col-form-label">시작일</label>
+                  <div class="col-sm-9">
+                    <input type="date" id="start-date" name="start_date" class="form-control">
+                    <div id="start-date-feedback" style="font-size:small"></div>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <label for="end-date" class="col-sm-2 col-form-label">종료일</label>
+                  <div class="col-sm-9">
+                    <input type="date" id="end-date" name="end_date" class="form-control">
+                    <div id="end-date-feedback" style="font-size:small"></div>
+                  </div>
+                </div>
+              </div>
+              <p style="font-size:small;color:red;">* 종료일은 휴가 종료 후 출근 날짜를 입력해 주세요.</p>
+              <p style="font-size:small;color:red;">* 휴가 신청 혹은 변경은 휴가 시작일 3일 전까지 진행해 주세요.</p>
+              <div class="mt-5" style="display:flex;justify-content:center;">
+                <button class="btn btn-primary" id="btn-submit" onclick="registVacation();">저장</button>
+              </div>
+            </form><!-- End General Form Elements -->
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xl-8">
+        <div class="card">
+          <div class="card-body">
+            <div class="profile-overview" id="profile-overview" style="padding:30px;display:flex;justify-content:center;">
+              <div id='calendar' style="width:800px;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+{% endblock main %}
+{% block javascripts %}
+<script src='https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.8/index.global.min.js'></script>
+<script src='https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@6.1.8/index.global.min.js'></script>
+<script src="{% static 'js/website/attendance/vacation.js' %}"></script>
+{% endblock javascripts %}
