@@ -11,6 +11,7 @@ from django.db import transaction
 from website.utils import validate_username, validate_email, validate_password
 from website.models import Department
 
+
 from api.serializers.auth.auth_serializers import RegisterSerializer, UsernameSerializer, EmailSerializer, LoginSerializer, UserSerializer
 from api.serializers.auth.token_serializers import MyTokenObtainPairSerializer, RefreshTokenIDSerializer, MyTokenRefreshSerializer, RefreshTokenSerializer
 

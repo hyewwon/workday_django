@@ -4,7 +4,7 @@ from api.views.auth_views.auth_views import CheckUsernameView, CheckEmailView, R
 from api.views.mypage_views.mypage_veiws import MyPageEditView, MyPageEditPasswordView
 from api.views.attendance_views.vacation_views import VacationView, VacationDeleteView
 from api.views.attendance_views.attendance_views import AttendanceView
-from api.views.free_board_views.free_board_views import FreeBoardCreateView
+from api.views.free_board_views.free_board_views import FreeBoardCreateView, FreeBoardDetailView
 
 app_name = "api"
 
@@ -27,6 +27,7 @@ urlpatterns = [
     path("vacation-delete/", VacationDeleteView.as_view(), name="vacation_delete"),
 
     path("free-board-create/", FreeBoardCreateView.as_view(), name="free_board_create"),
+    path("free-board-detail/<int:pk>/", FreeBoardDetailView.as_view(), name="free_board_detail"),
 
 
 ]

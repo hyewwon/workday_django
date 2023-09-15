@@ -6,6 +6,7 @@ from website.views.attendance_views.attendance_views import AttendanceView
 from website.views.notice_views.notice_views import NoticeView
 from website.views.free_board_views.free_board_views import FreeBoradView, FreeBoardCreateView, FreeBoardDetailView
 
+
 app_name = "website"
 
 urlpatterns = [

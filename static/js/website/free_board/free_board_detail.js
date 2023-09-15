@@ -1,12 +1,26 @@
-const board_type = document.getElementById("board-type");
-const title = document.getElementById("title");
-const content = document.getElementById("content");
-const anony_flag = document.getElementById("anony-flag");
-const board_type_feedback = document.getElementById("board-type-feedback");
-const title_feedback = document.getElementById("title-feedback");
-const content_feedback = document.getElementById("content-feedback");
+const btn_edit = document.getElementById("btn-delete");
 
-const btn_edit = document.getElementById("btn-save");
+function deleteBoard(pk){
+    if(!confirm("정말 삭제하시겠습니까?")){
+        return false;
+    }
+    $.ajax({
+        type:"DELETE",
+        url:`/api/free-board-detail/${pk}/`,
+        headers: {
+            'X-CSRFToken': csrftoken,
+            'Authorization': `Bearer ${getCookie("access_token")}`
+        },
+        success: function(data){
+            alert(data.message);
+            location.href = data.next;
+        },
+        error :function(error){
+            alert(error.responseJSON.message);
+            btn_edit.disabled = false;
+        }
+    })
+}
 
 function saveBoard(){
     if(!validation()){
@@ -31,7 +45,7 @@ function saveBoard(){
         contentType : false,
         success: function(data){
             alert(data.message);
-            location.href = data.next;
+            // location.href = data.next;
         },
         error :function(error){
             alert(error.responseJSON.message);

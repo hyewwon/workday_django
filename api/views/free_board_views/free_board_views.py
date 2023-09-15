@@ -35,7 +35,7 @@ class FreeBoardCreateView(GenericAPIView):
             try:
                 board_type = FreeBoardType.objects.get(id = board_type)
                 with transaction.atomic():
-                    FreeBoard.objects.create(
+                    free_board = FreeBoard.objects.create(
                         user = user,
                         title = title,
                         content = content,
@@ -46,5 +46,38 @@ class FreeBoardCreateView(GenericAPIView):
                 print(e)
                 return Response({"message":"작성 실패..."}, status=status.HTTP_400_BAD_REQUEST)
 
-        return Response({"message": "작성되었습니다.", "next" : reverse("website:mypage")}, status=status.HTTP_202_ACCEPTED)
+        return Response({"message": "작성되었습니다.", "next" : reverse("website:free_board_detail", kwargs={"pk" : free_board.id})}, status=status.HTTP_202_ACCEPTED)
+
+
+class FreeBoardDetailView(GenericAPIView):
+    
+    permission_classes = [IsAuthenticated]
+    
+    def delete(self ,request, *args, **kwargs):
+        pk = kwargs.get("pk")
+        user = getTokenUser(token=str(request.auth))
+        if not user:
+            return Response(
+                {"message": "토큰 정보 오류"},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+
+        try:
+            free_board = FreeBoard.objects.get(pk = pk)
+        
+        except:
+            return Response(
+                {"message": "존재하지 않는 QnA 입니다"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        if free_board.user.id != user.id:
+            return Response(
+                {"message": "삭제할 수 없는 사용자"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+    
+        free_board.delete()
+        
+        return Response({"message":"삭제되었습니다", "next" : reverse("website:free_board")}, status=status.HTTP_202_ACCEPTED)
 
