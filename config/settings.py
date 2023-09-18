@@ -45,13 +45,19 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
 	'rest_framework_simplejwt.token_blacklist',
+    'rest_framework.authtoken',
+
+    'dj_rest_auth',
+    'dj_rest_auth.registration',
     'drf_spectacular',
 
     # apps
     'api',
 ]
 
-SIDE_ID = 17
+SIDE_ID = 1
+
+REST_USE_JWT = True
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -220,3 +226,7 @@ SPECTACULAR_SETTINGS = {
 IP_API_KEY = config["IPSTACK_API_KEY"]
 LATITUDE = config["LATITUDE"]
 LONGITUDE = config["LONGITUDE"]
+
+SOCIAL_AUTH_GOOGLE_CLIENT_ID = config["SOCIAL_AUTH_GOOGLE_CLIENT_ID"]
+SOCIAL_AUTH_GOOGLE_SECRET = config["SOCIAL_AUTH_GOOGLE_SECRET"]
+STATE = config["STATE"]

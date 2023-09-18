@@ -12,7 +12,7 @@
 
             <div class="d-flex justify-content-center py-4">
               <a href="#" class="logo d-flex align-items-center w-auto">
-                <span class="d-none d-lg-block">NiceCompany</span>
+                <span class="d-none d-lg-block">WorkDay</span>
               </a>
             </div><!-- End Logo -->
 
@@ -36,10 +36,9 @@
                     <div id="password-feedback" style="font-size:small;"></div>
                   </div>
 
-                  <div class="col-12"></div>
                   <div class="col-12">
                     <button class="btn btn-primary w-100 mb-2" id="btn-login">NiceCompany 계정 로그인</button>
-                    <a href="{% provider_login_url 'google'%}?next=/" class="btn btn-outline-secondary w-100" id="btn-login"><img src="{% static "image/Google.webp" %}" alt="" style="width:21px;padding-right:2px;"> 구글 계정 로그인</a>
+                    <a href="{% provider_login_url 'google'%}?next=/" class="btn btn-outline-secondary w-100" id="google-login"><img src="{% static "image/Google.webp" %}" alt="" style="width:21px;padding-right:2px;"> 구글 계정 로그인</a>
                   </div>
                   <div class="col-12">
                     <p class="small mb-0">계정이 없으신가요? <a href="{% url 'website:register' %}">계정 생성하기</a></p>
