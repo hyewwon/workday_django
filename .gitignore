@@ -139,7 +139,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
-.config/conf.yaml
+conf.yaml
 
 # Spyder project settings
 .spyderproject
