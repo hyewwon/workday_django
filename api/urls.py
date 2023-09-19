@@ -6,8 +6,6 @@ from api.views.attendance_views.vacation_views import VacationView, VacationDele
 from api.views.attendance_views.attendance_views import AttendanceView
 from api.views.free_board_views.free_board_views import FreeBoardCreateView, FreeBoardDetailView
 
-
-
 app_name = "api"
 
 urlpatterns = [
@@ -21,8 +19,6 @@ urlpatterns = [
     path("token/refresh/", ReissueTokenView.as_view()),
     path("logout/", LogoutView.as_view(), name="logout"),
 
-
-    
     path("mypage-edit/", MyPageEditView.as_view(), name="mypage_edit"),
     path("mypage-password-edit/", MyPageEditPasswordView.as_view(), name="mypage_edit"),
 

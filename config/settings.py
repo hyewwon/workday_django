@@ -53,9 +53,10 @@ INSTALLED_APPS = [
 
     # apps
     'api',
+    'oauth',
 ]
 
-SIDE_ID = 1
+SIDE_ID = 2
 
 REST_USE_JWT = True
 
