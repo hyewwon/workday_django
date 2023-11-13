@@ -69,7 +69,7 @@ class OAuthGoogleCallbackView(APIView):
             user.profile.check_flag = "0"
             user.save()
 
-            return Response({"message" : "성공"})  
+            return Response({"message" : "로그인 되었습니다."})  
 
 
 class GoogleLogin(SocialLoginView):

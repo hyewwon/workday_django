@@ -1,7 +1,6 @@
 from django.urls import path, include
 from rest_framework_simplejwt.views import TokenVerifyView
 from api.views.auth_views.auth_views import CheckUsernameView, CheckEmailView, RegisterView, LoginView, ReissueTokenView, LogoutView
-from api.views.auth_views.google_views import GoogleLoginView, GoogleOAuthCallbackView
 from api.views.auth_views.oauth_google_views import OAuthGoogleCallbackView, OAuthGoogleLoginView, GoogleLogin
 from api.views.mypage_views.mypage_veiws import MyPageEditView, MyPageEditPasswordView
 from api.views.attendance_views.vacation_views import VacationView, VacationDeleteView
