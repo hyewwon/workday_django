@@ -13,7 +13,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-m%wh+=rlo4gzdb)_+ua@d$xywku&mhxih*bfm2it87h!80s#^g'
+SECRET_KEY = config["SECRET_KEY"]
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -32,11 +32,14 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
 
-    # allauth (google)
+    # allauth 
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-    'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.google', # (google)
+
+    'dj_rest_auth',
+    'dj_rest_auth.registration',
 
     #signal
     'website.apps.WebsiteConfig',
@@ -46,17 +49,20 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
 	'rest_framework_simplejwt.token_blacklist',
     'rest_framework.authtoken',
-
-    'dj_rest_auth',
-    'dj_rest_auth.registration',
     'drf_spectacular',
 
     # apps
     'api',
-    'oauth',
 ]
 
+REST_AUTH = {
+    "TOKEN_MODEL" : None,
+    "USE_JWT" : True,
+    "JWT_AUTH_HTTPONLY" : False
+}
+
 SIDE_ID = 2
+LOGIN_REDIRECT_URL = "/"
 
 REST_USE_JWT = True
 
@@ -72,6 +78,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'config.urls'
+
 
 TEMPLATES = [
     {
@@ -128,7 +135,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
-    'allauth.account.auth_backends.AuthenticationBackend',
+    'allauth.account.auth_backends.AuthenticationBackend', #oauth
 ]
 
 SOCIALACCOUNT_PROVIDERS = {
@@ -184,6 +191,8 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication', # jwt
     ),
+    "DEFAULT_PAGINATION_CLASS" : "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 10,
 }
 
 REST_USE_JWT = True
@@ -204,8 +213,6 @@ SPECTACULAR_SETTINGS = {
     # https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.3.md#openapi-object
     'TITLE': 'drf-spectacular API Document',
     'DESCRIPTION': 'drf-specatular 를 사용해서 만든 API 문서입니다.',
-    # Optional: MAY contain "name", "url", "email"
-    'CONTACT': {'name': 'GNC', 'url': 'http://www.gncsolution.co.kr/', 'email': 'gncsolution@gncsolution.co.kr '},
     # Swagger UI를 좀더 편리하게 사용하기위해 기본옵션들을 수정한 값들입니다.
     'SWAGGER_UI_SETTINGS': {
         # https://swagger.io/docs/open-source-tools/swagger-ui/usage/configuration/  <- 여기 들어가면 어떤 옵션들이 더 있는지 알수있습니다.

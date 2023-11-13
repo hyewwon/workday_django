@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
+from website.models import Profile, Department
 
+from dj_rest_auth.registration.serializers import RegisterSerializer as DefaultRegisterSerializer
 
 class UserSerializer(serializers.Serializer):
     class Meta:
@@ -26,5 +28,3 @@ class RegisterSerializer(serializers.Serializer):
 class LoginSerializer(serializers.Serializer):
     username = serializers.CharField(required=True)
     password = serializers.CharField(required=True)
-
-    

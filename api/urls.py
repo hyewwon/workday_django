@@ -1,10 +1,13 @@
-from django.urls import path
+from django.urls import path, include
 from rest_framework_simplejwt.views import TokenVerifyView
 from api.views.auth_views.auth_views import CheckUsernameView, CheckEmailView, RegisterView, LoginView, ReissueTokenView, LogoutView
+from api.views.auth_views.google_views import GoogleLoginView, GoogleOAuthCallbackView
+from api.views.auth_views.oauth_google_views import OAuthGoogleCallbackView, OAuthGoogleLoginView, GoogleLogin
 from api.views.mypage_views.mypage_veiws import MyPageEditView, MyPageEditPasswordView
 from api.views.attendance_views.vacation_views import VacationView, VacationDeleteView
 from api.views.attendance_views.attendance_views import AttendanceView
 from api.views.free_board_views.free_board_views import FreeBoardCreateView, FreeBoardDetailView
+
 
 app_name = "api"
 
@@ -28,6 +31,10 @@ urlpatterns = [
 
     path("free-board-create/", FreeBoardCreateView.as_view(), name="free_board_create"),
     path("free-board-detail/<int:pk>/", FreeBoardDetailView.as_view(), name="free_board_detail"),
+    
+    path("oauth/google/login/", OAuthGoogleLoginView.as_view(), name="oauth_google_login"),
+    path("oauth/google/login/callback/", OAuthGoogleCallbackView.as_view(), name="oauth_google_callback"),
+    path("oauth/google/login/finish/", GoogleLogin.as_view(), name="oauth_google_callback"),
 
 
 ]

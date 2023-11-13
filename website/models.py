@@ -12,6 +12,7 @@ class Department(models.Model):
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
     department = models.ForeignKey(Department, on_delete=models.SET_NULL, related_name="profile", null=True)
+    reg_root = models.CharField(db_column="reg_root", null=False, max_length=15, default="")
     phone_no = models.CharField(db_column="phone_no", null=True, max_length=15, default="")
     image = models.ImageField(db_column="image", upload_to="profile_images")
     note = models.TextField(db_column="note",null=True)
