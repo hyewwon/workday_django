@@ -1,5 +1,8 @@
 {% extends 'base.html' %}
 {% load static %}
+{% block stylesheets %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta2/dist/css/bootstrap-select.min.css">
+{% endblock stylesheets %}
 {% block body %}
 <main>
     <div class="container">
@@ -11,7 +14,7 @@
 
               <div class="d-flex justify-content-center py-4">
                 <a href="{% url 'website:register' %}" class="logo d-flex align-items-center w-auto">
-                  <span class="d-none d-lg-block">Company</span>
+                  <span class="d-none d-lg-block">Workday</span>
                 </a>
               </div><!-- End Logo -->
 
@@ -21,7 +24,7 @@
 
                   <div class="pt-4 pb-2">
                     <h5 class="card-title text-center pb-0 fs-4">계정 생성</h5>
-                    <p class="text-center small">* 계정 생성 내역 확인 후 로그인이 가능합니다.</p>
+                    <p class="text-center small">* 계정 생성 승인 후 로그인이 가능합니다.</p>
                   </div>
 
                   <form class="row g-3" id="registerForm" onsubmit="return false;">
@@ -60,22 +63,23 @@
                       </div>
                       <div id="email-feedback" style="font-size:small"></div>
                     </div>
+                    <!-- Button trigger modal -->
                     
                     <div class="col-12">
                       <label for="phone-no" class="form-label">전화번호</label>
                       <input type="text" name="phone_no" class="form-control" placeholder="000-0000-0000" id="phone-no">
                       <div id="phone-no-feedback" style="font-size:small"></div>
                     </div>
-
+                    
                     <div class="col-12">
-                      <label for="department" class="form-label">소속</label>
-                      <select class="form-select" name="department_id" id="department">
-                        {% for part in department %}
-                            <option value="{{part.id}}">{{part.name}}</option>
-                        {% endfor %}
-                      </select>
+                      <label for="department" class="form-label">소속</label><br>
+                      <div class="input-group has-validation">
+                        <input type="email" name="email" class="form-control" id="email" readonly>
+                        <button class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">검색하기</button>
+                      </div>
+                      <div id="phone-no-feedback" style="font-size:small"></div>
                     </div>
-
+                    
                     <div class="col-12">
                     </div>
                     <div class="col-12">
@@ -92,13 +96,48 @@
             </div>
           </div>
         </div>
-
+        
       </section>
 
     </div>
   </main><!-- End #main -->
 
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="searchCompanyModal" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="searchCompanyModal">근무지 검색</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div id='divGroupsSelect'>
+          <label for="company" class="form-label">회사명</label><br>
+          <select id='company' name='company' class="form-control selectpicker" data-style-base='form-control' data-live-search="true" title="근무하는 회사명을 선택해주세요." onchange="getDepartmentList();">
+              {% if companys %}
+                {% for company in companys %}
+                <option value="{{ company.id }}">{{ company.name }}</option>
+                {% endfor %}
+              {% endif %}
+          </select>
+        </div>
+        <div id="departmentSelect" class="mt-2" style="display:none;">
+          <label for="department" class="form-label">부서명</label><br>
+          <select id='deparment' name="department" class="form-select">
+              <option value="">부서를 선택해주세요</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">닫기</button>
+        <button type="button" class="btn btn-primary" onclick="input();">입력</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 {% endblock body %}
 {% block javascripts %}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta2/dist/js/bootstrap-select.min.js"></script>
 <script src="{% static 'js/website/auth/register.js' %}"></script>
 {% endblock javascripts %}

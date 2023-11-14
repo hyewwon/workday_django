@@ -5,6 +5,7 @@ from django.utils.decorators import method_decorator
 from website.decorators import login_required
 from website.utils import getTokenUser
 from website.models import Department
+import requests, json
 
 class HomeView(TemplateView):
     template_name = "auth/home.html"
@@ -21,7 +22,11 @@ class HomeView(TemplateView):
 class RegisterView(View):
     def get(self, request:HttpRequest, *args, **kwargs):
         context = {}
-        context["department"] = Department.objects.all()
+        url = "http://127.0.0.1:2424/api/company-list/"
+        headers = {'Content-Type': 'application/json', 'charset': 'UTF-8', 'Accept': '*/*'}
+        login_req = requests.get(url=url, headers=headers)
+        result = login_req.json()
+        context["companys"] = result["company"]
         return render(request, "auth/register.html", context)
 
 

@@ -1,6 +1,6 @@
 from django.urls import path, include
 from rest_framework_simplejwt.views import TokenVerifyView
-from api.views.auth_views.auth_views import CheckUsernameView, CheckEmailView, RegisterView, LoginView, ReissueTokenView, LogoutView
+from api.views.auth_views.auth_views import CheckUsernameView, CheckEmailView, RegisterView, LoginView, ReissueTokenView, LogoutView, CompanyListView, DepartmentListView
 from api.views.auth_views.oauth_google_views import OAuthGoogleCallbackView, OAuthGoogleLoginView, GoogleLogin
 from api.views.mypage_views.mypage_veiws import MyPageEditView, MyPageEditPasswordView
 from api.views.attendance_views.vacation_views import VacationView, VacationDeleteView
@@ -14,6 +14,8 @@ urlpatterns = [
     path("check-username/", CheckUsernameView.as_view(), name="check_username"),
     path("check-email/", CheckEmailView.as_view(), name="check_email"),
     path("registration/", RegisterView.as_view(), name="registration"),
+    path("company-list/", CompanyListView.as_view(), name="company_list"),
+    path("department-list/", DepartmentListView.as_view(), name="department_list"),
 
     path("login/", LoginView.as_view(), name="login"),
     path("token/verify/", TokenVerifyView.as_view()),

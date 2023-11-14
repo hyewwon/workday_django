@@ -243,6 +243,30 @@ function validation(){
     
 }
 
+async function getDepartmentList(){
+    const selected_company = document.getElementById("company");
+    $.ajax({
+        type:"GET",
+        url:"/api/department-list/",
+        success : function(data){
+            check_dupl_username.disabled = false;
+            username.disabled = false;
+            username_feedback.innerText = data.message;
+            username_feedback.style.color = "green";
+            checked_id = true;
+        },
+        error: function(error){
+            check_dupl_username.disabled = false;
+            username.disabled = false;
+            username_feedback.innerText = error.responseJSON.message;
+            username_feedback.style.color = "red";
+            username.focus();
+        }
+    })
+
+    
+}
+
 membername.oninput = function(){
     membername_feedback.innerHTML = "";
 }
