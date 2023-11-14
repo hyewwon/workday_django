@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from django.db import transaction
 from website.utils import validate_username, validate_email, validate_password
-from website.models import Department
+from website.models import Department, Company
 
 
 from api.serializers.auth.auth_serializers import RegisterSerializer, UsernameSerializer, EmailSerializer, LoginSerializer, UserSerializer
@@ -82,6 +82,7 @@ class RegisterView(GenericAPIView):
                     user.last_name = membername
                     user.profile.department = department
                     user.profile.phone_no = phone_no
+                    user.profile.reg_root = "workday"
                     user.save()
                     user.profile.save()
 
@@ -150,14 +151,25 @@ class LoginView(GenericAPIView):
         if serializer.is_valid(raise_exception=True):
             username = serializer.validated_data["username"]
             password = serializer.validated_data["password"]
+            login_type = serializer.validated_data["login_type"]
 
-            user = authenticate(username=username, password=password)
-
-            if user is None:
-                return Response({"message":"존재하지 않는 회원입니다."}, status=status.HTTP_400_BAD_REQUEST)
+            if login_type == "workday":
+                user = authenticate(username=username, password=password)
+                if user is None:
+                    return Response({"message":"아이디 혹은 비밀번호가 틀립니다."}, status=status.HTTP_400_BAD_REQUEST)
             
+            if login_type == "google":
+                try:
+                    user = User.objects.get(username = username)
+                except:
+                    return Response({"message":"존재하지 않는 회원입니다."}, status=status.HTTP_400_BAD_REQUEST)
+                
+                if user.has_usable_password():
+                    return Response({"message":"workday 계정으로 가입되어있습니다."}, status=status.HTTP_400_BAD_REQUEST)
+
+
             if user.profile.check_flag == "0":
-                return Response({"message":"신청 내역 확인 중 입니다."}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({"message":"신청 내역 확인 중 입니다."}, status=status.HTTP_403_FORBIDDEN)
 
             # 토근 발급
             token = MyTokenObtainPairSerializer.get_token(user)
@@ -176,8 +188,6 @@ class LoginView(GenericAPIView):
                 },
                 status=status.HTTP_200_OK                
             )
-
-
             return response
 
 
@@ -243,7 +253,21 @@ class LogoutView(GenericAPIView):
             return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-def check_authentication():
-    return True
+class CompanyListView(GenericAPIView):
+    '''
+        회사 리스트 API 
+    '''
+    permission_classes = [AllowAny]
+    def get(self, request, *args, **kwargs):
+        company = Company.objects.all().values("name", "id")
+        return Response({"company": company}, status=status.HTTP_200_OK)
+    
 
-            
+class DepartmentListView(GenericAPIView):
+    '''
+        부서 리스트 API
+    '''
+    permission_classes = [AllowAny]
+    def get(self, request, *args, **kwargs):
+        department = Department.objects.filter(company___id = 1).values("name", "id")
+        return Response({"deparment": department}, status=status.HTTP_200_OK)

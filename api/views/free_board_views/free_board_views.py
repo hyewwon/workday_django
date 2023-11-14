@@ -61,7 +61,6 @@ class FreeBoardDetailView(GenericAPIView):
                 {"message": "토큰 정보 오류"},
                 status=status.HTTP_401_UNAUTHORIZED
             )
-
         try:
             free_board = FreeBoard.objects.get(pk = pk)
         
