@@ -1,9 +1,19 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from datetime import datetime
+
+class Company(models.Model):
+    name = models.CharField(db_column="name", null=False, max_length=100)
+    image = models.ImageField(db_column="image", upload_to="company_images", null=True)
+    address = models.CharField(db_column='address', null=True, max_length=1024, default='')
+    class Meta:
+        db_table = "company"
 
 # 소속 부서
 class Department(models.Model):
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name="department")
     name = models.CharField(db_column="name", null=False, max_length=255)
     class Meta:
         db_table = "department"
@@ -11,7 +21,7 @@ class Department(models.Model):
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
-    department = models.ForeignKey(Department, on_delete=models.SET_NULL, related_name="profile", null=True)
+    company = models.ForeignKey(Company, on_delete=models.SET_NULL, related_name="profile", null=True)
     reg_root = models.CharField(db_column="reg_root", null=False, max_length=15, default="")
     phone_no = models.CharField(db_column="phone_no", null=True, max_length=15, default="")
     image = models.ImageField(db_column="image", upload_to="profile_images")
@@ -20,6 +30,16 @@ class Profile(models.Model):
 
     class Meta:
         db_table = "profile"
+        
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.create(user=instance)
+
+
+@receiver(post_save, sender=User)
+def save_user_profile(sender, instance, **kwargs):
+    instance.profile.save()
 
 # 휴가 
 class Vacation(models.Model):
