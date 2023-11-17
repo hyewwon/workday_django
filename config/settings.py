@@ -18,7 +18,7 @@ SECRET_KEY = config["SECRET_KEY"]
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -37,9 +37,6 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google', # (google)
-
-    'dj_rest_auth',
-    'dj_rest_auth.registration',
 
     #signal
     'website.apps.WebsiteConfig',
@@ -142,8 +139,7 @@ SOCIALACCOUNT_PROVIDERS = {
     'google': {
         'SCOPE': [
             'profile', 
-            'email', 
-            'name',
+            'email',
         ],
         'AUTH_PARAMS': {
             'access_type': 'online'
@@ -179,6 +175,9 @@ STATIC_ROOT = os.path.join(BASE_DIR, '.static_root')
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
+DATA_UPLOAD_MAX_NUMBER_FIELDS = None
+
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
@@ -194,6 +193,11 @@ REST_FRAMEWORK = {
     ),
     "DEFAULT_PAGINATION_CLASS" : "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 10,
+    'DEFAULT_PARSER_CLASSES': (
+    'rest_framework.parsers.JSONParser',
+    'rest_framework.parsers.FormParser',
+    'rest_framework.parsers.MultiPartParser',
+),
 }
 
 REST_USE_JWT = True

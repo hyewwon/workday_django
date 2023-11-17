@@ -33,14 +33,14 @@
                       <input type="text" name="membername" class="form-control" id="membername">
                       <div id="membername-feedback" style="font-size:small"></div>
                     </div>
-
+                    
                     <div class="col-12">
-                      <label for="username" class="form-label">아이디</label>
+                      <label for="email" class="form-label">개인 이메일</label>
                       <div class="input-group has-validation">
-                        <input type="text" name="username" class="form-control" id="username">
-                        <button class="btn btn-secondary btn-sm" class="form-control" id="check-dupl-username">중복 검사</button>
+                        <input type="email" name="email" class="form-control" id="email">
+                        <button class="btn btn-secondary btn-sm" class="form-control" id="check-dupl-email">중복 검사</button>
                       </div>
-                      <div id="username-feedback" style="font-size:small">영문자로 시작하는 6~20자 영문자 또는 숫자이어야 합니다.</div>
+                      <div id="email-feedback" style="font-size:small"></div>
                     </div>
                     
                     <div class="col-12">
@@ -55,14 +55,6 @@
                       <div id="check-password-feedback" style="font-size:small"></div>
                     </div>
                     
-                    <div class="col-12">
-                      <label for="email" class="form-label">개인 이메일</label>
-                      <div class="input-group has-validation">
-                        <input type="email" name="email" class="form-control" id="email">
-                        <button class="btn btn-secondary btn-sm" class="form-control" id="check-dupl-email">중복 검사</button>
-                      </div>
-                      <div id="email-feedback" style="font-size:small"></div>
-                    </div>
                     <!-- Button trigger modal -->
                     
                     <div class="col-12">
@@ -70,23 +62,40 @@
                       <input type="text" name="phone_no" class="form-control" placeholder="000-0000-0000" id="phone-no">
                       <div id="phone-no-feedback" style="font-size:small"></div>
                     </div>
-                    
+
                     <div class="col-12">
-                      <label for="department" class="form-label">소속</label><br>
-                      <div class="input-group has-validation">
-                        <input type="email" name="email" class="form-control" id="email" readonly>
-                        <button class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">검색하기</button>
+                      <label for="image" class="form-label">프로필 이미지</label><br>
+                      <input type="file" class="form-control" name="image" id="image">
+                      <div id="image-feedback" style="font-size:small">* 얼굴이 나오는 이미지를 입력해주세요</div>
+                    </div>
+
+                    <div class="col-12">
+                      <div id='divGroupsSelect'>
+                        <label for="company" class="form-label">회사명</label><br>
+                        <select id='company' name='company_id' class="form-control selectpicker" data-style-base='form-control' data-live-search="true" onChange="getDepartmentList();" placeholder="근무하는 회사를 선택해주세요.">
+                          <option value="" disabled>근무하는 회사를 검색해보세요.</option>
+                          {% if companys %}
+                          {% for company in companys %}
+                          <option value="{{ company.id }}">{{ company.name }}</option>
+                          {% endfor %}
+                          {% endif %}
+                        </select>
+                        <div id="company-feedback" style="font-size:small;color:red;"></div>
                       </div>
-                      <div id="phone-no-feedback" style="font-size:small"></div>
                     </div>
-                    
-                    <div class="col-12">
+
+                    <div class="col-12" id="departmentSelect" style="display:none;">
+                      <label for="department" class="form-label">부서명</label><br>
+                      <select id='department' name="department_id" class="form-select" placeholder="부서를 선택해주세요.">
+                      </select>
+                      <div id="department-feedback" style="font-size:small;color:red;"></div>
                     </div>
+
                     <div class="col-12">
                       <button class="btn btn-primary w-100" id="btn-submit">신청</button>
                     </div>
                     <div class="col-12">
-                      <p class="small mb-0">이미 계정이 존재하신가요? <a href="{% url 'website:login' %}">로그인</a></p>
+                      <p class="small mb-0">이미 계정이 있나요? <a href="{% url 'website:login' %}">로그인</a></p>
                     </div>
                   </form>
 
@@ -101,40 +110,6 @@
 
     </div>
   </main><!-- End #main -->
-
-<!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="searchCompanyModal" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="searchCompanyModal">근무지 검색</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <div id='divGroupsSelect'>
-          <label for="company" class="form-label">회사명</label><br>
-          <select id='company' name='company' class="form-control selectpicker" data-style-base='form-control' data-live-search="true" title="근무하는 회사명을 선택해주세요." onchange="getDepartmentList();">
-              {% if companys %}
-                {% for company in companys %}
-                <option value="{{ company.id }}">{{ company.name }}</option>
-                {% endfor %}
-              {% endif %}
-          </select>
-        </div>
-        <div id="departmentSelect" class="mt-2" style="display:none;">
-          <label for="department" class="form-label">부서명</label><br>
-          <select id='deparment' name="department" class="form-select">
-              <option value="">부서를 선택해주세요</option>
-          </select>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">닫기</button>
-        <button type="button" class="btn btn-primary" onclick="input();">입력</button>
-      </div>
-    </div>
-  </div>
-</div>
 
 {% endblock body %}
 {% block javascripts %}

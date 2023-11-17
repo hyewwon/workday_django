@@ -1,147 +1,90 @@
 const membername = document.getElementById("membername");
-const username = document.getElementById("username");
 const email = document.getElementById("email");
 const password = document.getElementById("password");
 const check_password = document.getElementById("check-password");
 const phone_no = document.getElementById("phone-no");
+const company = document.getElementById("company");
 const department = document.getElementById("department");
+const image = document.getElementById("image");
 
-const check_dupl_username = document.getElementById("check-dupl-username");
 const check_dupl_email = document.getElementById("check-dupl-email");
 const btn_submit = document.getElementById("btn-submit");
 
 const membername_feedback = document.getElementById("membername-feedback");
-const username_feedback = document.getElementById("username-feedback");
 const email_feedback = document.getElementById("email-feedback");
 const password_feedack = document.getElementById("password-feedback");
 const check_password_feedback = document.getElementById("check-password-feedback");
 const phone_no_feedback = document.getElementById("phone-no-feedback");
+const company_feedback = document.getElementById("company-feedback");
+const department_feedback = document.getElementById("department-feedback");
+const image_feedback = document.getElementById("image-feedback");
 
-let checked_id = false;
 let checked_email = false;
 
-// 아이디 중복검사
-check_dupl_username.addEventListener("click", () =>{
-    if(!checkID()){
-        return false;
-    }
-    check_dupl_username.disabled = true;
-    username.disabled = true;
-    $.ajax({
-        type:"POST",
-        url:"/api/check-username/",
-        headers: {
-            'X-CSRFToken': csrftoken
-        },
-        data : {
-            "username" : username.value
-        },
-        success : function(data){
-            check_dupl_username.disabled = false;
-            username.disabled = false;
-            username_feedback.innerText = data.message;
-            username_feedback.style.color = "green";
-            checked_id = true;
-        },
-        error: function(error){
-            check_dupl_username.disabled = false;
-            username.disabled = false;
-            username_feedback.innerText = error.responseJSON.message;
-            username_feedback.style.color = "red";
-            username.focus();
-        }
-    })
-    
-})
-
 // 이메일 중복검사
-check_dupl_email.addEventListener("click", () =>{
+check_dupl_email.addEventListener("click", async () =>{
     if(!checkEmail()){
         return false;
     }
     check_dupl_email.disabled = true;
     email.disabled = true;
-    $.ajax({
-        type:"POST",
-        url:"/api/check-email/",
-        headers: {
-            'X-CSRFToken': csrftoken
-        },
-        data : {
-            "email" : email.value
-        },
-        success: function(data){
+    try{
+        const response = await fetch("/api/check-email/", {
+            method: "POST",
+            headers : {'X-CSRFToken': csrftoken, "Content-Type":"application/json" },
+            body : JSON.stringify({
+                "email" : email.value
+            })
+        })
+        const result = await response.json();
+        if(response.status != 200){
+            check_dupl_email.disabled = false;
+            email.disabled = false;
+            email_feedback.innerText = "중복된 이메일 입니다.";
+            email_feedback.style.color = "red";
+            email.focus();
+        }else{
             check_dupl_email.disabled = false;
             email.disabled = false;
             email_feedback.innerText = "사용가능한 이메일 입니다.";
             email_feedback.style.color = "green";
             email.focus();
             checked_email = true;
-        },
-        error :function(error){
-            check_dupl_email.disabled = false;
-            email.disabled = false;
-            email_feedback.innerText = "중복된 이메일 입니다.";
-            email_feedback.style.color = "red";
-            email.focus();
         }
-    })
+    }
+    catch(error){
+        alert(error);
+    }
 })
 
 
 // 가입
-btn_submit.addEventListener("click", () =>{
+btn_submit.addEventListener("click", async () =>{
     if(!validation()){
         return false;
     }
     btn_submit.disabled = true;
     const data = new FormData(document.getElementById("registerForm"));
-    $.ajax({
-        type:"POST",
-        url:"/api/registration/",
-        headers: {
-            'X-CSRFToken': csrftoken
-        },
-        data : data,
-        enctype : "multipart/form-data",
-        processData : false,
-        contentType : false,
-        success: function(data){
-            alert(data.message);
-            location.href = "/login/";
-        },
-        error :function(error){
-            alert(error.responseJSON.message);
+    try{
+        const response = await fetch("/api/registration/", {
+            method: "POST",
+            headers : {'X-CSRFToken': csrftoken},
+            body : data
+        })
+        const result = await response.json();
+        if(response.status != 201){
+            alert(result.message);
             btn_submit.disabled = false;
+        }else{
+            alert(result.message);
+            location.href = "/login/";
         }
-    })
+    }
+    catch(error){
+        alert(error);
+    }
 })
 
-// 아이디 유효성검사
-function checkID(){
-    let reg_id = /^[a-z]+[a-z0-9]{5,19}$/g;
-    if(username.value == ""){
-        username_feedback.innerText = "아이디를 입력해주세요";
-        username_feedback.style.color = "red";
-        username.focus();
-        return false;
-    }
-    if(!reg_id.test(username.value)){
-        username_feedback.innerText = "영문자로 시작하는 6~20자 영문자 또는 숫자이어야 합니다.";
-        username_feedback.style.color = "red";
-        username.focus();
-        return false;
-    }
-
-    if(username.value.includes("admin")){
-        username_feedback.innerText = "'admin'이란 단어를 포함 할 수 없습니다."
-        username_feedback.style.color = "red";
-        username.focus();
-        return false;
-    }
-    
-    return true;
-}
 
 //이메일 유효성 검사
 function checkEmail(){
@@ -198,13 +141,14 @@ function validation(){
         membername.focus();
         return false;
     }
-    if(!checkID()){
+    
+    if(!checkEmail()){
         return false;
     }
-    if(!checked_id){
-        username_feedback.innerText = "아이디 중복검사를 해주세요";
-        username_feedback.style.color = "red";
-        username.focus();
+    if(!checked_email){
+        email_feedback.innerText = "이메일 중복검사를 해주세요";
+        email_feedback.style.color = "red";
+        email.focus();
         return false;
     }
     if(!checkPassword()){
@@ -222,58 +166,61 @@ function validation(){
         check_password.focus();
         return false;
     }
-    
-    if(!checkEmail()){
-        return false;
-    }
-    if(!checked_email){
-        email_feedback.innerText = "이메일 중복검사를 해주세요";
-        email_feedback.style.color = "red";
-        email.focus();
-        return false;
-    }
 
     if(phone_no.value == ""){
         phone_no_feedback.innerText = "전화번호를 입력해 주세요."
         phone_no_feedback.style.color = "red";
         return false;
-    
+        
+    }if(company.value == ""){
+        company_feedback.innerText = "회사명을 선택해주세요."
+        return false;
+        
+    }if(department.value == ""){
+        department_feedback.innerText = "부서명을 선택해 주세요."
+        return false;
     }
+    
     return true;
     
 }
 
 async function getDepartmentList(){
+    company_feedback.innerHTML = "";
+    department.innerHTML ="";
     const selected_company = document.getElementById("company");
-    $.ajax({
-        type:"GET",
-        url:"/api/department-list/",
-        success : function(data){
-            check_dupl_username.disabled = false;
-            username.disabled = false;
-            username_feedback.innerText = data.message;
-            username_feedback.style.color = "green";
-            checked_id = true;
-        },
-        error: function(error){
-            check_dupl_username.disabled = false;
-            username.disabled = false;
-            username_feedback.innerText = error.responseJSON.message;
-            username_feedback.style.color = "red";
-            username.focus();
-        }
-    })
+    try{
+        const response = await fetch(`/api/department-list/${selected_company.value}/`, {
+            method: "GET"
+        })
+        const result = await response.json();
+        if(result.success == false){
+            alert(result.message);
+        }else{
+            document.getElementById("departmentSelect").style.display = "block";
 
-    
+            let default_option = document.createElement("option");
+            default_option.setAttribute("value", "");
+            default_option.innerHTML = "부서명을 선택해주세요."
+            default_option.selected = true;
+            default_option.disabled = true;
+            department.appendChild(default_option);
+            for (let index = 0; index < result.length; index++) {
+                let option = document.createElement("option");
+                option.setAttribute("value", result[index].id);
+                option.innerHTML = result[index].name;
+                department.appendChild(option);
+            }     
+        }
+    }
+    catch(error){
+        alert(error);
+    }
 }
+
 
 membername.oninput = function(){
     membername_feedback.innerHTML = "";
-}
-username.oninput = function(){
-    username_feedback.innerHTML = "영문자로 시작하는 6~20자 영문자 또는 숫자이어야 합니다.";
-    username_feedback.style.color = "black";
-    checked_id = false;
 }
 email.oninput = function(){
     email_feedback.innerHTML = "";
@@ -289,4 +236,11 @@ check_password.oninput = function(){
 }
 phone_no.oninput = function(){
     phone_no_feedback.innerHTML = "";
+}
+department.onchange = function(){
+    department_feedback.innerHTML = "";
+}
+check_password.oninput = function(){
+    image_feedback.innerHTML = "* 얼굴이 나오는 이미지를 입력해주세요";
+    image_feedback.style.color = "black";
 }

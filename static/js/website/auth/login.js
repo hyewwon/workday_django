@@ -1,44 +1,75 @@
-const username = document.getElementById("username");
+const email = document.getElementById("email");
 const password = document.getElementById("password");
-const username_feedback = document.getElementById("username-feedback");
+const email_feedback = document.getElementById("email-feedback");
 const password_feedback = document.getElementById("password-feedback");
 const btn_login = document.getElementById("btn-login");
 
-btn_login.addEventListener("click", function(){
+btn_login.addEventListener("click", async function(){
     if(!validation()){
         return false;
     }
     btn_login.disabled = true;
-    $.ajax({
-        type:"POST",
-        url:"/api/login/",
-        headers: {'X-CSRFToken': csrftoken},
-        data:{
-            "username": username.value,
-            "password" : password.value
-        },
-        success : function(data){
-            setCookie("access_token", data.jwt_token.access_token, tokenPayload(data.jwt_token.access_token).exp);
-            setCookie("refresh_token_index_id", data.jwt_token.refresh_token_index_id, data.jwt_token.refresh_token_exp);
+    try{
+        const response = await fetch("/api/login/", {
+            method: "POST",
+            headers : {'X-CSRFToken': csrftoken, "Content-Type":"application/json" },
+            body : JSON.stringify({
+                "email": email.value,
+                "password" : password.value,
+                "login_type" : "workday"
+            })
+        })
+        const result = await response.json();
+        if(response.status != 200){
+            alert(result.message);
+            btn_login.disabled = false;
+        }else{
+            setCookie("access_token", result.jwt_token.access_token, tokenPayload(result.jwt_token.access_token).exp);
+            setCookie("refresh_token_index_id", result.jwt_token.refresh_token_index_id, result.jwt_token.refresh_token_exp);
             const URLSearch = new URLSearchParams(location.search);
             if(URLSearch.has('next')){
                 location.href = location.search.split('?next=')[1];
             }else{
                 location.href = "/";
             }
-        },
-        error: function(error){
-            alert(error.responseJSON.message);
-            btn_login.disabled = false;
         }
-    })
+    }
+    catch(error){
+        alert(error);
+    }
 })
+
+async function GoogleLogin(){
+    btn_login.disabled = true;
+    try{
+        const response = await fetch("/api/oauth/google/login/", {
+            method: "GET"
+        })
+        const result = await response.json();
+        if(response.status != 200){
+            alert(result.message);
+            btn_login.disabled = false;
+        }else{
+            setCookie("access_token", result.jwt_token.access_token, tokenPayload(result.jwt_token.access_token).exp);
+            setCookie("refresh_token_index_id", result.jwt_token.refresh_token_index_id, result.jwt_token.refresh_token_exp);
+            const URLSearch = new URLSearchParams(location.search);
+            if(URLSearch.has('next')){
+                location.href = location.search.split('?next=')[1];
+            }else{
+                location.href = "/";
+            }
+        }
+    }
+    catch(error){
+        alert(error);
+    }
+}
 
 
 function validation(){
-    if(username.value == ""){
-        username_feedback.innerText = "아이디를 입력해 주세요.";
-        username_feedback.style.color = "red";
+    if(email.value == ""){
+        email_feedback.innerText = "이메일을 입력해 주세요.";
+        email_feedback.style.color = "red";
         return false;
     }
     if(password.value == ""){
@@ -51,8 +82,8 @@ function validation(){
 }
 
 
-username.oninput = function(){
-    username_feedback.innerHTML = "";
+email.oninput = function(){
+    email_feedback.innerHTML = "";
 }
 
 password.oninput = function(){

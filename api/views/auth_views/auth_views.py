@@ -8,9 +8,11 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from django.db import transaction
+from django.core.files.base import ContentFile
+from django.db.models import CharField, F, Value as V, Func, Q
 from website.utils import validate_username, validate_email, validate_password
-from website.models import Department, Company
-
+from website.models import Department, Company, Profile
+import traceback, base64
 
 from api.serializers.auth.auth_serializers import RegisterSerializer, UsernameSerializer, EmailSerializer, LoginSerializer, UserSerializer
 from api.serializers.auth.token_serializers import MyTokenObtainPairSerializer, RefreshTokenIDSerializer, MyTokenRefreshSerializer, RefreshTokenSerializer
@@ -22,22 +24,17 @@ class RegisterView(GenericAPIView):
     permission_classes = [AllowAny]
     serializer_class = RegisterSerializer
     def post(self, request, *args, **kwargs):
-
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             membername = serializer.validated_data["membername"]
-            username = serializer.validated_data["username"]
+            image = serializer.validated_data["image"]
             password = serializer.validated_data["password"]
             check_password = serializer.validated_data["check_password"]
             email = serializer.validated_data["email"]
             phone_no = serializer.validated_data["phone_no"]
+            company_id = serializer.validated_data['company_id']
             department_id = serializer.validated_data["department_id"]
-
-            if not validate_username(username):
-                return Response(
-                    {"message": "유효하지 않은 아이디 입니다."},
-                    status=status.HTTP_400_BAD_REQUEST)
-
+            
             if not validate_password(password):
                 return Response(
                     {"message": "비밀번호는 숫자와 영문자 조합으로 8~16자리를 사용해야 합니다."}, 
@@ -54,16 +51,8 @@ class RegisterView(GenericAPIView):
                     status=status.HTTP_400_BAD_REQUEST)
 
             try:
-                User.objects.get(username=username)
-                return Response({"message": "아이디가 이미 존재합니다."},
-                status=status.HTTP_400_BAD_REQUEST)
-            except:
-                pass
-
-            try:
-                User.objects.get(email=email)
-                return Response({"message": "이미 가입한 이메일 입니다."},
-                status=status.HTTP_400_BAD_REQUEST)
+                User.objects.get(Q(username=email)|Q(email=email))
+                return Response({"message": "이미 가입한 이메일 입니다."}, status=status.HTTP_400_BAD_REQUEST)
             except:
                 pass
             
@@ -73,27 +62,27 @@ class RegisterView(GenericAPIView):
                     status=status.HTTP_400_BAD_REQUEST) 
             try:
                 with transaction.atomic():
-                    department = Department.objects.get(id = department_id)
+                    department = Department.objects.get(id = department_id, company__id = company_id)
                     user = User.objects.create_user(
-                        username,
-                        email,
-                        password
+                        username=email,
+                        email=email,
+                        password=password,
+                        last_name = membername
                     )
-                    user.last_name = membername
+                    user.profile.image = image
                     user.profile.department = department
                     user.profile.phone_no = phone_no
                     user.profile.reg_root = "workday"
                     user.save()
-                    user.profile.save()
 
             except Exception as e:
                 print(e)
+                print(traceback.format_exc())
                 return Response({"message": "오류 발생."}, status=status.HTTP_400_BAD_REQUEST)
-        
+
             return Response({"message": "가입 신청되었습니다."}, status=status.HTTP_201_CREATED)
+        
             
-
-
 
 class CheckUsernameView(GenericAPIView):
     '''
@@ -149,24 +138,23 @@ class LoginView(GenericAPIView):
     def post(self, request,*args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
-            username = serializer.validated_data["username"]
+            email = serializer.validated_data["email"]
             password = serializer.validated_data["password"]
             login_type = serializer.validated_data["login_type"]
 
             if login_type == "workday":
-                user = authenticate(username=username, password=password)
+                user = authenticate(username=email, password=password)
                 if user is None:
                     return Response({"message":"아이디 혹은 비밀번호가 틀립니다."}, status=status.HTTP_400_BAD_REQUEST)
             
             if login_type == "google":
                 try:
-                    user = User.objects.get(username = username)
+                    user = User.objects.get(username = email, email=email)
                 except:
                     return Response({"message":"존재하지 않는 회원입니다."}, status=status.HTTP_400_BAD_REQUEST)
                 
                 if user.has_usable_password():
                     return Response({"message":"workday 계정으로 가입되어있습니다."}, status=status.HTTP_400_BAD_REQUEST)
-
 
             if user.profile.check_flag == "0":
                 return Response({"message":"신청 내역 확인 중 입니다."}, status=status.HTTP_403_FORBIDDEN)
@@ -253,21 +241,25 @@ class LogoutView(GenericAPIView):
             return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class CompanyListView(GenericAPIView):
+class CompanyListView(APIView):
     '''
         회사 리스트 API 
     '''
     permission_classes = [AllowAny]
     def get(self, request, *args, **kwargs):
         company = Company.objects.all().values("name", "id")
-        return Response({"company": company}, status=status.HTTP_200_OK)
+        return Response(company, status=status.HTTP_200_OK)
     
 
-class DepartmentListView(GenericAPIView):
+class DepartmentListView(APIView):
     '''
         부서 리스트 API
     '''
     permission_classes = [AllowAny]
     def get(self, request, *args, **kwargs):
-        department = Department.objects.filter(company___id = 1).values("name", "id")
-        return Response({"deparment": department}, status=status.HTTP_200_OK)
+        company_id = kwargs.get("pk","")
+        if not id:
+            return Response({"message": "잘못된 요청입니다."}, status=status.HTTP_400_BAD_REQUEST)
+
+        department = Department.objects.filter(company__id = company_id).values("name", "id")
+        return Response(department, status=status.HTTP_200_OK)

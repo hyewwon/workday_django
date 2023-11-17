@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 from django.utils.decorators import method_decorator
 from website.decorators import login_required
 from website.utils import getTokenUser
-from website.models import Department
+from website.models import Department, Company
 import requests, json
 
 class HomeView(TemplateView):
@@ -26,7 +26,7 @@ class RegisterView(View):
         headers = {'Content-Type': 'application/json', 'charset': 'UTF-8', 'Accept': '*/*'}
         login_req = requests.get(url=url, headers=headers)
         result = login_req.json()
-        context["companys"] = result["company"]
+        context["companys"] = result
         return render(request, "auth/register.html", context)
 
 

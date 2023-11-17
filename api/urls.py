@@ -15,7 +15,7 @@ urlpatterns = [
     path("check-email/", CheckEmailView.as_view(), name="check_email"),
     path("registration/", RegisterView.as_view(), name="registration"),
     path("company-list/", CompanyListView.as_view(), name="company_list"),
-    path("department-list/", DepartmentListView.as_view(), name="department_list"),
+    path("department-list/<int:pk>/", DepartmentListView.as_view(), name="department_list"),
 
     path("login/", LoginView.as_view(), name="login"),
     path("token/verify/", TokenVerifyView.as_view()),
