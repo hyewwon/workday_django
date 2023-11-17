@@ -13,8 +13,7 @@ from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from allauth.socialaccount.providers.google import views as google_view
 from django.db import transaction
 from website.models import Profile
-import json
-import requests
+import json, requests
 
 state = settings.STATE
 client_id = settings.SOCIAL_AUTH_GOOGLE_CLIENT_ID
@@ -24,7 +23,6 @@ GOOGLE_CALLBACK_URI = BASE_URL + "api/oauth/google/login/callback/"
 
 class OAuthGoogleLoginView(APIView):
     permission_classes = [AllowAny]
-    
     def get(self, request, *args, **kwargs):
         scope = "https://www.googleapis.com/auth/userinfo.email"
         return redirect(f"https://accounts.google.com/o/oauth2/v2/auth?client_id={client_id}&response_type=code&redirect_uri={GOOGLE_CALLBACK_URI}&scope={scope}")
@@ -33,16 +31,17 @@ class OAuthGoogleLoginView(APIView):
 
 class OAuthGoogleCallbackView(APIView):
     permission_classes = [AllowAny]
-
     def get(self, request, *args, **kwargs):
-        code = request.GET.get("code")
-        token_req = requests.post(f"https://oauth2.googleapis.com/token?client_id={client_id}&client_secret={client_secret}&code={code}&grant_type=authorization_code&redirect_uri={GOOGLE_CALLBACK_URI}&state={state}")
-        token_req_json = token_req.json()
-        error = token_req_json.get("error")
-        if error is not None:
-            raise json.JSONDecodeError(error)
+        access_token = request.GET.get("access_token", "")
+        code = request.GET.get("code", "")
+        if not access_token:
+            token_req = requests.post(f"https://oauth2.googleapis.com/token?client_id={client_id}&client_secret={client_secret}&code={code}&grant_type=authorization_code&redirect_uri={GOOGLE_CALLBACK_URI}&state={state}")
+            token_req_json = token_req.json()
+            error = token_req_json.get("error")
+            if error is not None:
+                raise json.JSONDecodeError(error)
+            access_token =token_req_json.get("access_token")
 
-        access_token =token_req_json.get("access_token")
         user_info_req = requests.get(f"https://www.googleapis.com/oauth2/v3/userinfo?access_token={access_token}")
         # email_req = requests.get(f"https://www.googleapis.com/oauth2/v1/tokeninfo?access_token={access_token}")
 
@@ -70,12 +69,12 @@ class OAuthGoogleCallbackView(APIView):
 
         url = "http://127.0.0.1:2424/api/login/"
         headers = {'Content-Type': 'application/json', 'charset': 'UTF-8', 'Accept': '*/*'}
-        data = json.dumps({"username": user.username, "password": "None", "login_type" : "google"})
+        data = json.dumps({"email": user.email, "password": "None", "login_type" : "google"})
         login_req = requests.post(url=url, headers=headers, data=data)
         result = login_req.json()
 
         if login_req.status_code != 200:
-            return Response({"message" : result.get("message", "로그인 실패..") }, status=status.HTTP_401_UNAUTHORIZED)
+            return Response({"message" : result.get("message", "로그인 실패..")}, status=status.HTTP_401_UNAUTHORIZED)
 
         return Response(result, status=status.HTTP_200_OK)
 
