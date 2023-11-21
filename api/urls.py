@@ -1,7 +1,7 @@
 from django.urls import path, include
 from rest_framework_simplejwt.views import TokenVerifyView
 from api.views.auth_views.auth_views import CheckUsernameView, CheckEmailView, RegisterView, LoginView, ReissueTokenView, LogoutView, CompanyListView, DepartmentListView
-from api.views.auth_views.oauth_google_views import OAuthGoogleCallbackView, OAuthGoogleLoginView, GoogleLogin
+from api.views.auth_views.oauth_google_views import OAuthGoogleCallbackView, OAuthGoogleLoginView, CheckGoogleUserView, OAuthGoogleRegisterView
 from api.views.mypage_views.mypage_veiws import MyPageEditView, MyPageEditPasswordView
 from api.views.attendance_views.vacation_views import VacationView, VacationDeleteView
 from api.views.attendance_views.attendance_views import AttendanceView
@@ -23,6 +23,11 @@ urlpatterns = [
     path("token/refresh/", ReissueTokenView.as_view()),
     path("logout/", LogoutView.as_view(), name="logout"),
 
+    path("oauth/google/login/", OAuthGoogleLoginView.as_view(), name="oauth_google_login"),
+    path("oauth/google/login/callback/", OAuthGoogleCallbackView.as_view(), name="oauth_google_callback"),
+    path("oauth/google/check-user/", CheckGoogleUserView.as_view(), name="check_google_user"),
+    path("oauth/google/registration/", OAuthGoogleRegisterView.as_view(), name="google_registration"),
+
     path("mypage-edit/", MyPageEditView.as_view(), name="mypage_edit"),
     path("mypage-password-edit/", MyPageEditPasswordView.as_view(), name="mypage_edit"),
 
@@ -32,10 +37,5 @@ urlpatterns = [
 
     path("free-board-create/", FreeBoardCreateView.as_view(), name="free_board_create"),
     path("free-board-detail/<int:pk>/", FreeBoardDetailView.as_view(), name="free_board_detail"),
-    
-    path("oauth/google/login/", OAuthGoogleLoginView.as_view(), name="oauth_google_login"),
-    path("oauth/google/login/callback/", OAuthGoogleCallbackView.as_view(), name="oauth_google_callback"),
-    path("oauth/google/login/finish/", GoogleLogin.as_view(), name="oauth_google_callback"),
-
 
 ]

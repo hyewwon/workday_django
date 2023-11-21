@@ -32,4 +32,5 @@ class RegisterView(View):
 
 class LoginView(View):
     def get(self, request:HttpRequest, *args, **kwargs):
+        print(kwargs)
         return render(request, "auth/login.html")

@@ -157,7 +157,7 @@ class LoginView(GenericAPIView):
                     return Response({"message":"workday 계정으로 가입되어있습니다."}, status=status.HTTP_400_BAD_REQUEST)
 
             if user.profile.check_flag == "0":
-                return Response({"message":"신청 내역 확인 중 입니다."}, status=status.HTTP_403_FORBIDDEN)
+                return Response({"message":"신청 내역 확인 중 입니다."}, status=status.HTTP_400_BAD_REQUEST)
 
             # 토근 발급
             token = MyTokenObtainPairSerializer.get_token(user)

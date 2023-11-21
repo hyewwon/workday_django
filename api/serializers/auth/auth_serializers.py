@@ -31,3 +31,9 @@ class LoginSerializer(serializers.Serializer):
     password = serializers.CharField(required=False)
     login_type = serializers.CharField(required=True)
 
+
+class OAuthGoogleRegisterSerializer(serializers.Serializer):
+    department_id = serializers.CharField(required=True)
+    membername = serializers.CharField(required=True)
+    accessToken = serializers.CharField(required=True)
+

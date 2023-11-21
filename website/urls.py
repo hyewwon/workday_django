@@ -5,6 +5,7 @@ from website.views.attendance_views.vacation_views import VacationViews
 from website.views.attendance_views.attendance_views import AttendanceView
 from website.views.notice_views.notice_views import NoticeView
 from website.views.free_board_views.free_board_views import FreeBoradView, FreeBoardCreateView, FreeBoardDetailView
+from website.views.auth_views.oauth_google_views import OAuthGoogleCallbackView, OAuthGoogleLoginView
 
 
 app_name = "website"
@@ -24,4 +25,7 @@ urlpatterns = [
     path("free-borad/",FreeBoradView.as_view(), name="free_board"),
     path("free-borad-create/",FreeBoardCreateView.as_view(), name="free_board_create"),
     path("free-borad-detail/<int:pk>/",FreeBoardDetailView.as_view(), name="free_board_detail"),
+
+    path("google/login/", OAuthGoogleLoginView.as_view(), name="google_login"),
+    path("google/login/callback/", OAuthGoogleCallbackView.as_view(), name="google_callback"),
 ]
