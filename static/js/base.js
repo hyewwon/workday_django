@@ -1,5 +1,4 @@
 const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-
 function authentication(){
     let access_token = getCookie("access_token");
     let refresh_token_index_id = getCookie("refresh_token_index_id");

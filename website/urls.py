@@ -5,7 +5,7 @@ from website.views.attendance_views.vacation_views import VacationViews
 from website.views.attendance_views.attendance_views import AttendanceView
 from website.views.notice_views.notice_views import NoticeView
 from website.views.free_board_views.free_board_views import FreeBoradView, FreeBoardCreateView, FreeBoardDetailView
-from website.views.auth_views.oauth_google_views import OAuthGoogleCallbackView, OAuthGoogleLoginView
+from website.views.auth_views.oauth_google_views import OAuthGoogleCallbackView, OAuthGoogleLoginView, GoogleRegisterView
 
 
 app_name = "website"
@@ -14,6 +14,7 @@ urlpatterns = [
     path("", HomeView.as_view(), name="home"),
     path("login/", LoginView.as_view(), name="login"),
     path("register/", RegisterView.as_view(), name="register"),
+    path("google-register/", GoogleRegisterView.as_view(), name="google_register"),
 
     path("mypage/", MyPageView.as_view(), name="mypage"),
     path("mypage-edit/", MyPageEditView.as_view(), name="mypage_edit"),

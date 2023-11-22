@@ -145,7 +145,7 @@ class LoginView(GenericAPIView):
             if login_type == "workday":
                 user = authenticate(username=email, password=password)
                 if user is None:
-                    return Response({"message":"아이디 혹은 비밀번호가 틀립니다."}, status=status.HTTP_400_BAD_REQUEST)
+                    return Response({"message":"이메일 혹은 비밀번호가 틀립니다."}, status=status.HTTP_400_BAD_REQUEST)
             
             if login_type == "google":
                 try:

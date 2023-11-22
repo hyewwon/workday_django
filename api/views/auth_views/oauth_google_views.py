@@ -31,6 +31,9 @@ class OAuthGoogleLoginView(APIView):
 
 
 class OAuthGoogleCallbackView(APIView):
+    '''
+        구글 로그인
+    '''
     permission_classes = [AllowAny]
     def get(self, request, *args, **kwargs):
         access_token = request.GET.get("accessToken", "")
@@ -70,6 +73,9 @@ class OAuthGoogleCallbackView(APIView):
 
 
 class CheckGoogleUserView(APIView):
+    '''
+        구글 계정 확인
+    '''
     permission_classes = [AllowAny]
     def get(self, request, *args, **kwargs):
         access_token = request.GET.get("accessToken", "")
@@ -92,6 +98,9 @@ class CheckGoogleUserView(APIView):
 
 
 class OAuthGoogleRegisterView(GenericAPIView):
+    '''
+        구글 계정 회원가입
+    '''
     permission_classes = [AllowAny]
     serializer_class = OAuthGoogleRegisterSerializer
     def post(self, request, *args, **kwargs):
@@ -99,7 +108,7 @@ class OAuthGoogleRegisterView(GenericAPIView):
             serializer = self.get_serializer(data=request.data)
             if serializer.is_valid(raise_exception=True):
                 membername = serializer.validated_data["membername"]
-                department_id = serializer.validated_data["image"]
+                department_id = serializer.validated_data["department_id"]
                 access_token = serializer.validated_data["accessToken"]
 
                 if not access_token:
@@ -128,17 +137,8 @@ class OAuthGoogleRegisterView(GenericAPIView):
 
         except:
             return Response({"message" : "가입 실패"}, status=status.HTTP_400_BAD_REQUEST)
-            
-        url = "http://127.0.0.1:2424/api/login/"
-        headers = {'Content-Type': 'application/json', 'charset': 'UTF-8', 'Accept': '*/*'}
-        data = json.dumps({"email": user.email, "password": "None", "login_type" : "google"})
-        login_req = requests.post(url=url, headers=headers, data=data)
-        result = login_req.json()
 
-        if login_req.status_code != 200:
-            return Response({"message" : result.get("message", "로그인 실패..")}, status=status.HTTP_400_BAD_REQUEST)
-
-        return Response(result, status=status.HTTP_202_ACCEPTED)
+        return Response({"message": "가입 성공!"}, status=status.HTTP_202_ACCEPTED)
 
 
 

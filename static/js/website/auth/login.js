@@ -2,6 +2,7 @@ const email = document.getElementById("email");
 const password = document.getElementById("password");
 const email_feedback = document.getElementById("email-feedback");
 const password_feedback = document.getElementById("password-feedback");
+const login_feedback = document.getElementById("login-feedback");
 const btn_login = document.getElementById("btn-login");
 
 btn_login.addEventListener("click", async function(){
@@ -39,33 +40,6 @@ btn_login.addEventListener("click", async function(){
     }
 })
 
-async function GoogleLogin(){
-    btn_login.disabled = true;
-    try{
-        const response = await fetch("/api/oauth/google/login/", {
-            method: "GET"
-        })
-        const result = await response.json();
-        if(response.status != 200){
-            alert(result.message);
-            btn_login.disabled = false;
-        }else{
-            setCookie("access_token", result.jwt_token.access_token, tokenPayload(result.jwt_token.access_token).exp);
-            setCookie("refresh_token_index_id", result.jwt_token.refresh_token_index_id, result.jwt_token.refresh_token_exp);
-            const URLSearch = new URLSearchParams(location.search);
-            if(URLSearch.has('next')){
-                location.href = location.search.split('?next=')[1];
-            }else{
-                location.href = "/";
-            }
-        }
-    }
-    catch(error){
-        alert(error);
-    }
-}
-
-
 function validation(){
     if(email.value == ""){
         email_feedback.innerText = "이메일을 입력해 주세요.";
@@ -83,9 +57,11 @@ function validation(){
 
 
 email.oninput = function(){
+    login_feedback.innerHTML = "";
     email_feedback.innerHTML = "";
 }
 
 password.oninput = function(){
+    login_feedback.innerHTML = "";
     password_feedback.innerHTML = "";
 }

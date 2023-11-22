@@ -15,12 +15,15 @@
                 <span class="d-none d-lg-block">WorkDay</span>
               </a>
             </div><!-- End Logo -->
-
             <div class="card mb-3">
               <div class="card-body">
                 <div class="pt-4 pb-2">
                   <h5 class="card-title text-center pb-0 fs-4">로그인</h5>
-                  <p class="text-center small"></p>
+                  {% if messages %}
+                  {% for message in messages %}
+                  <p id="login-feedback" class="text-center small" style="color:red;">{{ message }}</p>
+                  {% endfor %}
+                  {% endif %}
                 </div>
 
                 <form class="row g-3" onsubmit="return false;">
@@ -38,8 +41,7 @@
 
                   <div class="col-12">
                     <button class="btn btn-primary w-100 mb-2" id="btn-login">NiceCompany 계정 로그인</button>
-                    <a href="{% url "api:oauth_google_login" %}" class="btn btn-outline-secondary w-100" id="google-login"><img src="{% static "image/Google.webp" %}" alt="" style="width:21px;padding-right:2px;"> 구글 계정 로그인</a>
-                    <a type="button" class="btn btn-outline-secondary w-100" id="google-login" onclick="GoogleLogin();"><img src="{% static "image/Google.webp" %}" alt="" style="width:21px;padding-right:2px;"> 구글 계정 로그인</a>
+                    <a href="{% url "website:google_login" %}" class="btn btn-outline-secondary w-100" id="google-login"><img src="{% static "image/Google.webp" %}" alt="" style="width:21px;padding-right:2px;"> 구글 계정 로그인</a>
                   </div>
                   <div class="col-12">
                     <p class="small mb-0">계정이 없나요? <a href="{% url 'website:register' %}">계정 생성하기</a></p>

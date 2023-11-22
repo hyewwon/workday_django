@@ -15,10 +15,14 @@ class HomeView(TemplateView):
         access_token = request.COOKIES.get("access_token", None)
         user = getTokenUser(token=access_token)
         context["user"] = user
-
         return render(request, self.template_name, context)
+    
+class ChoiceRegisterView(TemplateView):
+    template_name = "auth/choice_register.html"
+    def get(self, request:HttpRequest, *args, **kwargs):
+        return render(request, self.template_name)
 
-
+    
 class RegisterView(View):
     def get(self, request:HttpRequest, *args, **kwargs):
         context = {}
@@ -32,5 +36,5 @@ class RegisterView(View):
 
 class LoginView(View):
     def get(self, request:HttpRequest, *args, **kwargs):
-        print(kwargs)
         return render(request, "auth/login.html")
+
