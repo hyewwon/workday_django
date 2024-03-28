@@ -42,15 +42,13 @@
             <div class="row mb-3">
               <label for="title" class="col-sm-2 col-form-label">제목</label>
               <div class="col-sm-9">
-                <input id="title" name="title" type="text" class="form-control" placeholder="제목을 입력해주세요">
+                {{form.title}}
                 <div id="title-feedback" style="font-size:small"></div>
               </div>
             </div>
             <div class="row mb-5">
               <label for="content" class="col-sm-2 col-form-label">내용</label>
-              <div class="col-sm-9">
-                <textarea class="form-control" id="content" name="content" style="min-height: 300px" placeholder="내용을 입력해 주세요"></textarea>
-              </div>
+              {{form.content}}
             </div>
             <div class="mb-3">
               <button class="btn btn-primary" id="btn-save" style="float: right;" onclick="saveBoard();">작성 완료</button>

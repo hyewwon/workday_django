@@ -4,6 +4,7 @@ from django.shortcuts import render,  redirect
 from django.utils.decorators import method_decorator
 from django.db.models import Q, Case, When, Value, F, Prefetch, Subquery, OuterRef
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger, InvalidPage
+from website.forms import FreeBoardForm
 from website.utils import getTokenUser
 from website.decorators import login_required
 from website.models import FreeBoardType, FreeBoard
@@ -55,7 +56,7 @@ class FreeBoardCreateView(View):
         user = getTokenUser(token = access_token)
         board_type = FreeBoardType.objects.all()
         context["user"] = user
-        context["board_type"] = board_type
+        context["form"] = FreeBoardForm
         return render(request, "free_board/free_board_create.html", context)
 
 

@@ -15,6 +15,7 @@ urlpatterns = [
     path('', include("website.urls")),
     path('api/', include("api.urls")),
     path('oauth/', include("allauth.urls")),
+    path('summernote/', include('django_summernote.urls')),
 
     # Open API 자체를 조회 : json, yaml, 
     path("docs/json/", SpectacularJSONAPIView.as_view(), name="schema-json"),

@@ -1,10 +1,8 @@
 const board_type = document.getElementById("board-type");
 const title = document.getElementById("title");
-const content = document.getElementById("content");
 const anony_flag = document.getElementById("anony-flag");
 const board_type_feedback = document.getElementById("board-type-feedback");
 const title_feedback = document.getElementById("title-feedback");
-const content_feedback = document.getElementById("content-feedback");
 
 const btn_edit = document.getElementById("btn-save");
 
@@ -57,13 +55,6 @@ function validation(){
         return false;
     
     }
-
-    if(content.value == ""){
-        content_feedback.innerText = "내용을 입력해 주세요."
-        content_feedback.style.color = "red";
-        return false;
-    
-    }
     
     return true;
 }
@@ -78,6 +69,3 @@ title.oninput = function(){
     title_feedback.innerHTML = "";
 }
 
-content.oninput = function(){
-    content_feedback.innerHTML = "";
-}

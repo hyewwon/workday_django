@@ -47,7 +47,17 @@ class OAuthGoogleCallbackView(View):
 
         try:
             user = User.objects.get(email = email, username=email)
+        except:
+            with transaction.atomic():
+                user = User.objects.create_user(username=email, email=email)
+                user.profile.image = image
+                user.profile.reg_root = "google"
+                user.profile.check_flag = "0"
+                user.save()
             
+            return redirect(f"/google-register/?access_token={access_token}")
+        
+        try:
             if not user.profile.department:
                 return redirect(f"/google-register/?access_token={access_token}")
 
@@ -69,16 +79,12 @@ class OAuthGoogleCallbackView(View):
             response.set_cookie("access_token", result["jwt_token"]["access_token"], max_age=int(60 * 20))
             response.set_cookie("refresh_token_index_id", result["jwt_token"]["refresh_token_index_id"], max_age=result["jwt_token"]["refresh_token_exp"])
             return response
+        
+        except Exception as e:
+            print(e)
+            response = redirect("/")
+            return response
 
-        except:
-            with transaction.atomic():
-                user = User.objects.create_user(username=email, email=email)
-                user.profile.image = image
-                user.profile.reg_root = "google"
-                user.profile.check_flag = "0"
-                user.save()
-            
-            return redirect(f"/google-register/?access_token={access_token}")
 
 
 class GoogleRegisterView(View):
