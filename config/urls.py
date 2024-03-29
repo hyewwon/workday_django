@@ -14,6 +14,8 @@ urlpatterns = [
     
     path('', include("website.urls")),
     path('api/', include("api.urls")),
+    path('company-manage/', include("company_manage.urls")),
+
     path('oauth/', include("allauth.urls")),
     path('summernote/', include('django_summernote.urls')),
 

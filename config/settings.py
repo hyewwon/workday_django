@@ -51,6 +51,7 @@ INSTALLED_APPS = [
 
     # apps
     'api',
+    'company_manage',
 ]
 
 REST_AUTH = {
