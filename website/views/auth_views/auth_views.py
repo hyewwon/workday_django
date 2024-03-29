@@ -38,3 +38,8 @@ class LoginView(View):
     def get(self, request:HttpRequest, *args, **kwargs):
         return render(request, "auth/login.html")
 
+
+class TempView(View):
+    def get(self, request:HttpRequest, *args, **kwargs):
+        return render(request, "auth/select_login.html")
+

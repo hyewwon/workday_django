@@ -1,0 +1,112 @@
+{% extends 'company_manage/base.html' %}
+{% load static %}
+{% block main %}
+<main id="main" class="main">
+
+  <div class="pagetitle mt-2 mb-5">
+    <h1>인사 권한 관리</h1>
+  </div><!-- End Page Title -->
+
+  <section class="section profile">
+    <div class="card">
+      <div class="card-header mb-3">
+        <b>검색 필터</b>
+      </div>
+      <div class="card-body">
+
+        <!-- Horizontal Form -->
+        <form>
+          <div class="row mb-3">
+            <label for="inputEmail3" class="col-sm-2 col-form-label">부서명 / 직급</label>
+            <div class="col-sm-6">
+              <select name="department" id="department" class="form-select">
+                <option value="">전체</option>
+                {% for i in department %}
+                  <option value="{{i.id}}">{{i.name}}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-sm-4">
+              <select name="rank" id="rank" class="form-select">
+                <option value="" disabled selected>전체</option>
+              </select>
+            </div>
+          </div>
+          <div class="row mb-4">
+            <label for="inputEmail3" class="col-sm-2 col-form-label">직접 검색</label>
+            <div class="col-sm-10">
+              <div class="input-group mb-3">
+                <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">검색 조건</button>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="#">직원명</a></li>
+                  <li><a class="dropdown-item" href="#">이메일</a></li>
+                </ul>
+                <input type="text" class="form-control" aria-label="Text input with dropdown button">
+              </div>
+            </div>
+          </div>
+          <div class="text-center">
+            <button type="submit" class="btn btn-primary">검색</button>
+            <button type="reset" class="btn btn-secondary">초기화</button>
+          </div>
+        </form><!-- End Horizontal Form -->
+
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header mb-2">
+        <b>직원 목록</b>
+      </div>
+      <div class="card-body">
+        <table class="table table-hover text-center">
+          <thead>
+            <tr class="table-primary">
+              <th scope="col-auto">#</th>
+              <th scope="col-auto">직원명</th>
+              <th scope="col-auto">이메일</th>
+              <th scope="col-auto">부서명</th>
+              <th scope="col-auto">직급</th>
+              <th scope="col-auto">입사일</th>
+              <th scope="col-auto">관리 권한</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% if page_obj %}
+            {% for i in page_obj %}
+            <tr>
+              <td>{{forloop.counter}}</td>
+              <td><a href="{% url 'website:free_board_detail' i.id %}">{{i.title}}</a></td>
+              <td>{{i.board_type__type_name}}</td>
+              {% if i.anonymous_flag == "0" %}
+              <td>{{i.user__username}}</td>
+              {% else %}
+              <td>비공개</td>
+              {% endif %}
+              <td>{{i.created_at}}</td>
+              <td>{{i.created_at}}</td>
+              <td>
+                <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
+                </div>
+              </td>
+            </tr>
+
+            {% endfor %}
+            {% else %}
+            <tr>
+              <td colspan="7">데이터가 없습니다.</td>
+            </tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+      {% include "pagination.html" %}
+    </div>
+  </section>
+</main><!-- End #main -->
+
+
+{% endblock main %}
+{% block javascripts %}
+{% endblock javascripts %}

@@ -16,6 +16,12 @@ def getTokenUser(token:str) -> object:
 
     return user
 
+def check_manage_type(user:object):
+    '''
+        인사 관리자인지 체크
+    '''
+    return
+
 def validate_username(username):
     '''
     아이디 유효성 체크

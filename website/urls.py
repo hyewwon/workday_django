@@ -1,5 +1,5 @@
 from django.urls import path
-from website.views.auth_views.auth_views import HomeView, RegisterView, LoginView
+from website.views.auth_views.auth_views import HomeView, RegisterView, LoginView, TempView
 from website.views.mypage_views.mypage_views import MyPageView, MyPageEditView
 from website.views.attendance_views.vacation_views import VacationViews
 from website.views.attendance_views.attendance_views import AttendanceView
@@ -29,4 +29,8 @@ urlpatterns = [
 
     path("google/login/", OAuthGoogleLoginView.as_view(), name="google_login"),
     path("google/login/callback/", OAuthGoogleCallbackView.as_view(), name="google_callback"),
+
+    path("temp/", TempView.as_view(), name="temp"),
+
+
 ]
