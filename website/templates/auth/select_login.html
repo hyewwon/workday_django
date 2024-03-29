@@ -1,0 +1,46 @@
+{% extends 'website/base.html' %}
+{% load static %}
+{% load socialaccount %}
+{% block body %}
+<main>
+  <div class="container">
+
+    <section class="section register min-vh-100 d-flex flex-column align-items-center justify-content-center py-4">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-lg-4 col-md-6 d-flex flex-column align-items-center justify-content-center">
+
+            <div class="d-flex justify-content-center py-4">
+              <a href="#" class="logo d-flex align-items-center w-auto">
+                <span class="d-none d-lg-block">WorkDay</span>
+              </a>
+            </div><!-- End Logo -->
+            <div class="card mb-3">
+              <div class="card-body">
+                <h5 class="card-title text-center fs-4" style="padding:30px;">관리 선택</h5>
+                <div style="padding-right:200px;padding-left:200px;">
+                  {% if messages %}
+                  {% for message in messages %}
+                  <p id="login-feedback" class="text-center small" style="color:red;">{{ message }}</p>
+                  {% endfor %}
+                  {% endif %}
+                </div>
+                <div class="mt-3 mb-3">
+                  <a href="{% url "website:home" %}" type="button" class="btn btn-outline-secondary w-100 mb-4">인사 관리</a>
+                  <a href="{% url "website:home" %}" type="button" class="btn btn-outline-secondary w-100">업무 관리</a>
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+</main><!-- End #main -->
+{% endblock body %}
+{% block javascripts %}
+{% endblock javascripts %}
