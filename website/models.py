@@ -72,10 +72,20 @@ class Department(models.Model):
     class Meta:
         db_table = "department"
 
+# 직책
+class Rank(models.Model):
+    department = models.ForeignKey(Department,on_delete=models.CASCADE, related_name="rank")
+    name = models.CharField(db_column="name", null=False, max_length=255)
+    manager_flag = models.BooleanField(db_column="manager_flag", null=False)
 
+    class Meta:
+        db_table = "rank"
+    
+    
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
-    department = models.ForeignKey(Department, on_delete=models.CASCADE, related_name="profile", null=True)
+    department = models.ForeignKey(Department, on_delete=models.SET_NULL, related_name="profile", null=True)
+    rank = models.ForeignKey(Rank, on_delete=models.SET_NULL, null=True, related_name="profile")
     reg_root = models.CharField(db_column="reg_root", null=False, max_length=15, default="")
     phone_no = models.CharField(db_column="phone_no", null=True, max_length=15, default="")
     image = models.ImageField(db_column="image", upload_to="profile_images", null=True)
