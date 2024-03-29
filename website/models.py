@@ -69,6 +69,7 @@ class Company(models.Model):
 class Department(models.Model):
     company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name="department")
     name = models.CharField(db_column="name", null=False, max_length=255)
+    created_at = models.DateTimeField(db_column="created_at", auto_now_add=True, null=True)
     class Meta:
         db_table = "department"
 
